@@ -13,6 +13,10 @@ function onOpen() {
   .addItem('Roll d12', 'RollD12')
   .addItem('Roll d\%', 'RollD100')
   .addItem('Roll d20', 'RollD20')
+  .addSubMenu(SlidesApp.getUi().createMenu('5e')
+    .addItem('Roll d20', 'RollD20dnd')
+    .addItem('Roll d20 with Advantage', 'RollD20Adv')
+    .addItem('Roll d20 with Disadvantage', 'RollD20Dis'))
   .addItem('Roll d20 with Advantage', 'RollD20Adv')
   .addItem('Roll d20 with Disadvantage', 'RollD20Dis')
   .addItem('Roll 4dF (Fate/Fudge)', 'Roll4DF')
@@ -266,4 +270,29 @@ function Roll4DF(){
   rollResult += modDice;
   Logger.log('The final roll was %d', rollResult)
   ui.alert('Roll: ' + rollResult + ' ' + FudgeConv(r1) + ' ' + FudgeConv(r2) + ' ' + FudgeConv(r3) + ' ' + FudgeConv(r4) + ' ' + FateLadder(rollResult));
+}
+
+function RollD20dnd(){
+  var ui = SlidesApp.getUi();
+  var rollResult = getRndInt(1,20);
+  Logger.log('User rolled ' + rollResult);
+  var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
+  var modDice = Number();
+  if (qModIn.getSelectedButton() == ui.Button.OK) {
+    if (qModIn.getResponseText() == '') {
+      modDice = 0;
+    }
+    else {
+      modDice = Number(qModIn.getResponseText());
+    }
+    Logger.log('The user\'s roll is modified by ' + modDice);
+  }
+  else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
+    Logger.log('The user cancelled the roll.');
+  }
+  else {
+  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+  }
+  rollResult += modDice;
+  ui.alert('Roll: ' + rollResult);
 }
