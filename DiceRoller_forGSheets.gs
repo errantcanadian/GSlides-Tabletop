@@ -15,7 +15,8 @@ function onOpen() {
   .addItem('Roll d20', 'RollD20')
   .addItem('Roll d20 with Advantage', 'RollD20Adv')
   .addItem('Roll d20 with Disadvantage', 'RollD20Dis')
-
+  .addItem('Roll 4dF (Fate/Fudge)', 'Roll4DF')
+  .addItem('Roll 2d6 (PBtA)', 'Roll2D6')
   .addToUi();
 }
 
@@ -126,3 +127,106 @@ function RollD20Dis(){
   Logger.log('The user rolled a %d', rollResult);
   ui.alert('Roll: ' + rollResult)
 }
+
+function FudgeConv(i) {
+  if (i == -1){
+    return '[–]';
+  }
+  else if (i == 0){
+    return '[\ \ ]';
+  }
+  else if (i == 1){
+    return '[+]';
+  }
+  else {
+    return '';
+  }
+}
+
+function FateLadder(i) {
+  let fladder = new Array('Horrifying', 'Catastrophic', 'Terrible', 'Poor', 'Mediocre', 'Average', 'Fair', 'Good', 'Great', 'Superb', 'Fantastic', 'Epic', 'Legendary');
+  if (i < -4) {
+    i = -4;
+  }
+  else if (i > 8){
+    i = 8;
+  }
+  i += 4;
+  return fladder[i];
+}
+
+function pbtaMove(i){
+  if (i < 7){
+    return 'Failure or Hard GM Move.';
+  }
+  else if (i > 6 && i < 10){
+    return 'Partial Success or Soft GM Move.';
+  }
+  else if (i > 9 && i < 13){
+    return 'Complete Success.';
+  }
+  else if (i > 11){
+    return 'Complete Success and possible Advanced Move.';
+  }
+  else {
+    return 'Invalid input.';
+  }
+}
+
+function Roll2D6(){
+  var ui = SlidesApp.getUi();
+  var r1 = getRndInt(1,6);
+  var r2 = getRndInt(1,6);
+  Logger.log('The user rolled ' + r1 + ' and ' + r2);
+  var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
+  var modDice = Number();
+  if (qModIn.getSelectedButton() == ui.Button.OK) {
+    if (qModIn.getResponseText() == '') {
+      modDice = 0;
+    }
+    else {
+      modDice = Number(qModIn.getResponseText());
+    }
+    Logger.log('The user\'s roll is modified by ' + modDice);
+  }
+  else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
+    Logger.log('The user cancelled the roll.');
+  }
+  else {
+  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+  }
+  rollResult = r1 + r2 + modDice;
+  Logger.log('The final roll was %d', rollResult);
+  var outMessage = 'The final roll was ' + rollResult + ' ';
+  outMessage += pbtaMove(rollResult);
+  ui.alert(outMessage);
+}
+
+function Roll4DF(){
+  var ui = SlidesApp.getUi();
+  var r1 = getRndInt(-1,1);
+  var r2 = getRndInt(-1,1);
+  var r3 = getRndInt(-1,1);
+  var r4 = getRndInt(-1,1);
+  Logger.log('User rolled ' + r1 + ', ' + r2 + ', ' + r3 + ', ' + r4);
+  var rollResult = r1 + r2 + r3 + r4;
+  var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
+  var modDice = Number();
+  if (qModIn.getSelectedButton() == ui.Button.OK) {
+    if (qModIn.getResponseText() == '') {
+      modDice = 0;
+    }
+    else {
+      modDice = Number(qModIn.getResponseText());
+    }
+    Logger.log('The user\'s roll is modified by ' + modDice);
+  }
+  else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
+    Logger.log('The user cancelled the roll.');
+  }
+  else {
+  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+  }
+  rollResult += modDice;
+  Logger.log('The final roll was %d', rollResult)
+  ui.alert('Roll: ' + rollResult + ' ' + FudgeConv(r1) + ' ' + FudgeConv(r2) + ' ' + FudgeConv(r3) + ' ' + FudgeConv(r4) + ' ' + FateLadder(rollResult));
