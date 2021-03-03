@@ -116,7 +116,26 @@ function RollD20Adv(){
   var r2 = getRndInt(1,20);
   var rollResult = Math.max(r1, r2);
   Logger.log('The user rolled a %d', rollResult);
-  ui.alert('Roll: ' + rollResult)
+  var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
+  var modDice = Number();
+  if (qModIn.getSelectedButton() == ui.Button.OK) {
+    if (qModIn.getResponseText() == '') {
+      modDice = 0;
+    }
+    else {
+      modDice = Number(qModIn.getResponseText());
+    }
+    Logger.log('The user\'s roll is modified by ' + modDice);
+  }
+  else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
+    Logger.log('The user cancelled the roll.');
+  }
+  else {
+  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+  }
+  rollResult += modDice;
+  Logger.log('The final roll was %d', rollResult)
+  ui.alert('Roll: ' + rollResult + ' (' + r1 + ', ' + r2 + ')')
 }
 
 function RollD20Dis(){
@@ -125,7 +144,26 @@ function RollD20Dis(){
   var r2 = getRndInt(1,20);
   var rollResult = Math.min(r1, r2);
   Logger.log('The user rolled a %d', rollResult);
-  ui.alert('Roll: ' + rollResult)
+  var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
+  var modDice = Number();
+  if (qModIn.getSelectedButton() == ui.Button.OK) {
+    if (qModIn.getResponseText() == '') {
+      modDice = 0;
+    }
+    else {
+      modDice = Number(qModIn.getResponseText());
+    }
+    Logger.log('The user\'s roll is modified by ' + modDice);
+  }
+  else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
+    Logger.log('The user cancelled the roll.');
+  }
+  else {
+  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+  }
+  rollResult += modDice;
+  Logger.log('The final roll was %d', rollResult)
+  ui.alert('Roll: ' + rollResult + ' (' + r1 + ', ' + r2 + ')')
 }
 
 function FudgeConv(i) {
@@ -197,9 +235,7 @@ function Roll2D6(){
   }
   rollResult = r1 + r2 + modDice;
   Logger.log('The final roll was %d', rollResult);
-  var outMessage = 'The final roll was ' + rollResult + ' ';
-  outMessage += pbtaMove(rollResult);
-  ui.alert(outMessage);
+  ui.alert('The final roll was ' + rollResult + ' ' + pbtaMove(rollResult));
 }
 
 function Roll4DF(){
@@ -230,3 +266,4 @@ function Roll4DF(){
   rollResult += modDice;
   Logger.log('The final roll was %d', rollResult)
   ui.alert('Roll: ' + rollResult + ' ' + FudgeConv(r1) + ' ' + FudgeConv(r2) + ' ' + FudgeConv(r3) + ' ' + FudgeConv(r4) + ' ' + FateLadder(rollResult));
+}
