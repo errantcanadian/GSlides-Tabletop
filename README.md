@@ -16,4 +16,4 @@ To roll 1d20, go to Roll Dice > Roll d20. A dialogue box presenting a roll of 1�
 To roll 2d6+6, go to Roll Dice > Roll Dice. Enter '2' in the first dialogue prompt, '6' in the second prompt, and '6' in the third. A dialogue box presenting a roll of 8–18 will appear.
 
 ## Example 3
-To roll 1d20 with disadvantage, got to Roll Dice > Roll d20 with Disadvantage. A dialogue box presenting a roll of 1–20 will appear.
+To roll 1d20 with disadvantage, got to Roll Dice > Roll d20 with Disadvantage. You will be prompted for any modifiers (leave blank if none). A dialogue box presenting the final modified roll of 1–20 and both raw rolls will appear.
