@@ -1,6 +1,6 @@
 // With some code from Alice Keeler https://script.google.com/u/0/home/projects/1HuMPfc-sfehoZ06KFVI39J5dCr7kLAm7yxZyAc0tDw8NM1ER8FN8igMx/edit
 // The hope is to make a dice roller that is native to Slides so it can be used as a virtual tabletop.
-// Inspired by Mike Shea (@SlyFlourish) talking about using Slides as a VTT alternative for those who aren't so bothered about tactical grids.
+// Inspired by Mike Shea (@SlyFlourish) talking about using Slides as a VTT alternative 
 
 function onOpen() {
   SlidesApp.getUi()
@@ -204,7 +204,7 @@ function pbtaMove(i){
   else if (i > 6 && i < 10){
     return 'Partial Success or Soft GM Move.';
   }
-  else if (i > 9 && i < 13){
+  else if (i > 9 && i < 12){
     return 'Complete Success.';
   }
   else if (i > 11){
