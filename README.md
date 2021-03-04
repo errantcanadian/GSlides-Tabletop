@@ -3,7 +3,7 @@ Tools for using Google Slides as a Virtual Tabletop for D&amp;D and other rolepl
 ## How to use
 Create a file in Google Slides. Create your virtual tabletop space by importing and drawing tokens and maps and other aids, just as you would in Roll20 or similar.
 
-Go to Tools > Script editor. In `Code.gs`, paste the contents of `DiceRoller_forGSheets.gs`. Refresh your Google Slide file. A new menu called Roll Dice should appear.
+Go to Tools > Script editor. In `Code.gs`, paste the contents of `DiceRoller_forGSlides.gs`. Refresh your Google Slide file. A new menu called Roll Dice should appear.
 
 To roll a single die, including d20 with 5e dis/advantage, 4dF (Fudge or Fate), and 2d6 (PbtA), go to the Roll Dice menu and select an option. A dialogue box will appear immediately with the result.
 
