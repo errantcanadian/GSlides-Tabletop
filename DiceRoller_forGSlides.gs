@@ -21,6 +21,7 @@ function onOpen() {
     .addItem('Roll d20 with Disadvantage', 'RollD20Dis'))
   .addItem('Roll 4dF (Fate/Fudge)', 'Roll4DF')
   .addItem('Roll 2d6 (PBtA)', 'Roll2D6PBTA')
+  .addItem('Roll 2d6 (WSCAOS?)', 'Roll2D6WSC')
   .addSubMenu(SlidesApp.getUi().createMenu('Forged in the Dark')
     .addItem('Roll Fortune', 'RollFITDfort')
     .addItem('Roll Skill', 'RollFITDskill')
@@ -58,8 +59,8 @@ function RollDice(){
     return;
   }
   else {
-  Logger.log('The user clicked the close button in the dialog\'s title bar.');
-  return;
+    Logger.log('The user clicked the close button in the dialog\'s title bar.');
+    return;
   }
   var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
   var modDice = Number();
@@ -77,8 +78,8 @@ function RollDice(){
     return;
   }
   else {
-  Logger.log('The user clicked the close button in the dialog\'s title bar.');
-  return;
+    Logger.log('The user clicked the close button in the dialog\'s title bar.');
+    return;
   }
   var rollResult = Number();
   for (d=1; d<(numDice + 1); d++) {
@@ -149,7 +150,7 @@ function RollD20Adv(){
     Logger.log('The user cancelled the roll.');
   }
   else {
-  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+    Logger.log('The user clicked the close button in the dialog\'s title bar.');
   }
 }
 
@@ -177,7 +178,7 @@ function RollD20Dis(){
     Logger.log('The user cancelled the roll.');
   }
   else {
-  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+    Logger.log('The user clicked the close button in the dialog\'s title bar.');
   }
 }
 
@@ -249,7 +250,7 @@ function Roll2D6PBTA(){
     Logger.log('The user cancelled the roll.');
   }
   else {
-  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+    Logger.log('The user clicked the close button in the dialog\'s title bar.');
   }
 }
 
@@ -279,7 +280,7 @@ function Roll4DF(){
     Logger.log('The user cancelled the roll.');
   }
   else {
-  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+   Logger.log('The user clicked the close button in the dialog\'s title bar.');
   }
 }
 
@@ -304,7 +305,7 @@ function RollD20dnd(){
     Logger.log('The user cancelled the roll.');
   }
   else {
-  Logger.log('The user clicked the close button in the dialog\'s title bar.');
+    Logger.log('The user clicked the close button in the dialog\'s title bar.');
   }
 }
 
@@ -330,20 +331,20 @@ function FITDinterpreter(rolls,type){
   }
   else if (type == 'f') {
     if (rolls.filter(n => n == 6).length > 1) {
-    Logger.log('Critical');
-    return 'Exceptional Result!!';
+      Logger.log('Critical');
+      return 'Exceptional Result!!';
     }
     else if (rolls.includes(6) == true) {
-    Logger.log('Success');
-    return 'Good Result!';
+      Logger.log('Success');
+      return 'Good Result!';
     }
     else if (rolls.includes(4) == true || rolls.includes(5) == true) {
-    Logger.log('Partial');
-    return 'Mixed Result.';
+      Logger.log('Partial');
+      return 'Mixed Result.';
     }
     else {
-    Logger.log('Bad');
-    return 'Bad Result.';
+      Logger.log('Bad');
+      return 'Bad Result.';
     }
   }
 }
@@ -512,23 +513,44 @@ function RollFITDresist(){
   var ui = SlidesApp.getUi();
   var qResist = ui.prompt('Enter the rating of the Attribute you are resisting with:', ui.ButtonSet.OK_CANCEL);
   if (qResist.getSelectedButton() == ui.Button.OK) {
-    var dice = Number(qResist.getResponseText());
+    var dice = Number();
+    if (qResist.getResponseText() == '') {
+      dice = 0
+    }
+    else {
+      dice = Number(qResist.getResponseText());
+    }
     Logger.log(`Character rolls ${dice} dice.`);
     var r = Number();
     let rollArr = new Array();
-    for (d=1; d<dice+1; d++){
+    var stress = Number();
+    if (dice == 0) {
+      var r1 = getRndInt(1,6);
+      rollArr.push(r1);
+      Logger.log(`Rolled a ${r1}`);
+      var r2 = getRndInt(1,6);
+      rollArr.push(r2);
+      Logger.log(`Rolled a ${r2}`);
+      var rollLower = Math.min(r1, r2);
+      Logger.log(`Zero dice: taking the lower of ${rollArr}: ${rollLower}`)
+      stress = 6 - rollLower;
+      ui.alert(`Roll (zero dice — take the lowest): ${rollArr}\nConsequence resisted.\nTake ${stress} stress.`);
+    }
+    else {
+      for (d=1; d<dice+1; d++){
       r = getRndInt(1,6);
       Logger.log(`Rolled a ${r}.`);
       rollArr.push(r);
-    }
-    if (rollArr.filter(n => n == 6).length > 1){
-      Logger.log('Critical success');
-      ui.alert(`Roll: ${rollArr} (Critical!!)\nConsequence resisted. Clear 1 stress.`);
-    }
-    else {
-      var stress = 6 - Math.max(...rollArr);
-      Logger.log(`Character takes ${stress} stress.`);
-      ui.alert(`Roll: ${rollArr}\nConsequence resisted.\nTake ${stress} stress.`);
+      }
+      if (rollArr.filter(n => n == 6).length >1){
+        Logger.log('Critical success');
+        ui.alert(`Roll: ${rollArr} (Critical!!)\nConsequence resisted. Clear 1 stress.`);
+      }
+      else {
+        stress = 6 - Math.max(...rollArr);
+        Logger.log(`Character takes ${stress} stress.`);
+        ui.alert(`Roll: ${rollArr}\nConsequence resisted.\nTake ${stress} stress.`);
+      }
     }
   }
   else if (qResist.getSelectedButton() == ui.Button.CANCEL) {
@@ -539,4 +561,51 @@ function RollFITDresist(){
     Logger.log('The user closed the prompt.');
     return;
   }
+}
+
+function Roll2D6WSC(){
+  var ui = SlidesApp.getUi();
+  var roll = getRndInt(1,6) + getRndInt(1,6);
+  Logger.log(`User rolled ${roll}.`);
+  var adv = ui.prompt('How many advantages do you have?', ui.ButtonSet.OK_CANCEL);
+  if (adv.getSelectedButton() == ui.Button.OK) {
+    var nadv = Number()
+    if (adv.getResponseText() == '') {
+      nadv = 0
+    }
+    else {
+      nadv = Number(adv.getResponseText());
+    }
+    Logger.log(`Character has ${nadv} advantages.`);
+  }
+  else {
+    Logger.log('User cancelled the roll.');
+    return;
+  }
+  var dis = ui.prompt('How many disadvantages do you have?', ui.ButtonSet.OK_CANCEL);
+  if (dis.getSelectedButton() == ui.Button.OK) {
+    var ndis = Number()
+    if (dis.getResponseText() == '') {
+      ndis = 0
+    }
+    else {
+      ndis = Number(dis.getResponseText());
+    }
+    Logger.log(`Character has ${ndis} advantages.`);
+  }
+  else {
+    Logger.log('User cancelled the roll.');
+    return;
+  }
+  var rollResult = roll + nadv - ndis;
+  Logger.log(`Final roll: ${rollResult}.`);
+  var outcome = String();
+  if (rollResult > 7) {
+    outcome = 'Success!';
+  }
+  else {
+    outcome = 'Failure!';
+  }
+  Logger.log(`Roll was a ${outcome}.`)
+  ui.alert(`Roll: ${rollResult} (${roll} + ${nadv} - ${ndis}) — ${outcome}`);
 }
