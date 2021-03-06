@@ -9,6 +9,17 @@ To roll a single die, including d20 with 5e dis/advantage, 4dF (Fudge or Fate), 
 
 To roll multiple dice with modifiers, go to Roll Dice > Roll Dice. Three dialogue boxes will prompt for: the number of dice to roll, the die size, and any modifiers. A final dialogue box will appear, letting you know the result.
 
+## Supported Games
+`DiceRoller_forGSlides.gs` currently supports the following types of rolls:
+* Input a custom dice expression (three prompts: number of dice, die size, modifiers)
+* Standard polyhedrals (d4, d6, d8, d10, d12, d20, d100)
+* 5e D&D (d20 plus modifiers, with or without dis/advantage)
+* Fate or Fudge (4dF plus modifiers)
+* Powered by the Apocalypse (2d6 plus modifiers, returns degree of success, i.e. failure on 6-, partial success on 7–9, full success on 10+, possible advanced move on 12+)
+* Traveller (2d6 plus characteristic modifier plus skill level plus dice modifier, returns success or failure against a target number – default is 8)
+* What's So Cool About Outer Space? (2d6 plus advantages, minus disadvantages, against a target number of 8)
+* Forged in the Dark (Fortune, Skill, Vice, and Resistance rolls)
+
 ## Example 1
 To roll 1d20, go to Roll Dice > Roll d20. A dialogue box presenting a roll of 1–20 will appear.
 
