@@ -15,18 +15,27 @@ function onOpen() {
   .addItem('Roll d12', 'RollD12')
   .addItem('Roll d\%', 'RollD100')
   .addItem('Roll d20', 'RollD20')
-  .addSubMenu(SlidesApp.getUi().createMenu('5e')
+  .addSubMenu(
+    SlidesApp.getUi().createMenu('5e')
     .addItem('Roll d20', 'RollD20dnd')
     .addItem('Roll d20 with Advantage', 'RollD20Adv')
-    .addItem('Roll d20 with Disadvantage', 'RollD20Dis'))
+    .addItem('Roll d20 with Disadvantage', 'RollD20Dis')
+    )
   .addItem('Roll 4dF (Fate/Fudge)', 'Roll4DF')
-  .addItem('Roll 2d6 (PBtA)', 'Roll2D6PBTA')
-  .addItem('Roll 2d6 (WSCAOS?)', 'Roll2D6WSC')
-  .addSubMenu(SlidesApp.getUi().createMenu('Forged in the Dark')
+  .addSubMenu(
+    SlidesApp.getUi().createMenu('Roll 2d6')
+    .addItem('Powered by the Apocalypse', 'Roll2D6PBTA')
+    .addItem('Traveller', 'Roll2D6Trav')
+    //.addItem('Tunnel Goons', 'Roll2D6Goons')
+    .addItem('WSCAOS', 'Roll2D6WSC')
+    )
+  .addSubMenu(
+    SlidesApp.getUi().createMenu('Forged in the Dark')
     .addItem('Roll Fortune', 'RollFITDfort')
     .addItem('Roll Skill', 'RollFITDskill')
     .addItem('Roll Vice', 'RollFITDvice')
-    .addItem('Roll Resistance', 'RollFITDresist'))
+    .addItem('Roll Resistance', 'RollFITDresist')
+    )
   .addToUi();
 }
 
@@ -609,3 +618,95 @@ function Roll2D6WSC(){
   Logger.log(`Roll was a ${outcome}.`)
   ui.alert(`Roll: ${rollResult} (${roll} + ${nadv} - ${ndis}) — ${outcome}`);
 }
+
+function Roll2D6Trav() {
+  var ui = SlidesApp.getUi();
+  var roll = getRndInt(1,6) + getRndInt(1,6);
+  var rollResult = roll;
+  var skillR = 0;
+  var diceMod = 0;
+  var charMod = 0;
+  var diff = 8;
+  Logger.log(`User rolled ${roll}.`);
+  var attrib = ui.prompt('Enter your rank in the relevant characteristic:', ui.ButtonSet.OK_CANCEL);
+  if (attrib.getSelectedButton() == ui.Button.OK) {
+    var nAttrib = Number()
+    if (attrib.getResponseText() == '') {
+      nAttrib = 0;
+    }
+    else {
+      nAttrib = Number(attrib.getResponseText());
+    }
+    Logger.log(`Character has ${nAttrib} rank in attribute.`);
+    if (nAttrib == 0) {charMod = -3;}
+    else if (nAttrib <= 2) {charMod = -2;}
+    else if (nAttrib <= 5) {charMod = -1;}
+    else if (nAttrib <= 8) {charMod = 0;}
+    else if (nAttrib <= 11) {charMod = 1;}
+    else if (nAttrib <=14) {charMod = 2;}
+    else if (nAttrib >=15) {charMod = 3;}
+    Logger.log(`Characteristic modifier: ${charMod}.`);
+  }
+  else {
+    Logger.log('User cancelled the roll.');
+    return;
+  }
+  var qSkill = ui.alert('Is this a skill check?', ui.ButtonSet.YES_NO);
+  if (qSkill == ui.Button.YES) {
+    var qSkillR = ui.prompt('Enter your level in the relevant skill (leave blank for None)', ui.ButtonSet.OK_CANCEL);
+    if (qSkillR.getSelectedButton() == ui.Button.OK) {
+      skillR = Number(qSkillR.getResponseText());
+      if (isNaN(skillR) == true || qSkillR.getResponseText() == '') {skillR = -3;}
+      Logger.log(`Character has ${skillR} DM from skill.`);
+    }
+    else {
+      Logger.log('User cancelled the roll.');
+      return;
+    }
+  }
+  else if (qSkill == ui.Button.NO) {
+    Logger.log('Not a skill check.');
+  }
+  else {
+    Logger.log('User cancelled the roll.');
+    return;
+  }
+  var qDM = ui.prompt('Enter any other dice modifiers (leave blank for none).', ui.ButtonSet.OK_CANCEL);
+  if (qDM.getSelectedButton() == ui.Button.OK) {
+    if (qDM.getResponseText() == '' || isNaN(Number(qDM.getResponseText())) == true) {
+      diceMod = 0;
+    }
+    else {
+      diceMod = Number(qDM.getResponseText());
+    }
+    Logger.log(`Dice modifier = ${diceMod}.`);
+  }
+  else {
+    Logger.log('User cancelled the roll.');
+    return;
+  }
+  var qDiff = ui.prompt('What is the difficulty of the check? (Leave blank for Average 8+)', ui.ButtonSet.OK_CANCEL);
+  if (qDiff.getSelectedButton() == ui.Button.OK) {
+    diff = Number(qDiff.getResponseText());
+    if (isNaN(diff) == true || qDiff.getResponseText() == '') {diff = 8;}
+    Logger.log(`Check difficulty: ${diff}.`)
+  }
+  else {
+    Logger.log('User cancelled the roll.');
+    return;
+  }
+  rollResult = roll + charMod + skillR + diceMod;
+  Logger.log(`Roll result was ${rollResult}.`);
+  if (rollResult >= diff) {
+    Logger.log('Check succeeds');
+    ui.alert(`Roll: ${rollResult} (${roll} + ${charMod} + ${skillR} + ${diceMod}) — Success!`);   
+  }
+  else {
+    Logger.log('Check fails');
+    ui.alert(`Roll: ${rollResult} (${roll} + ${charMod} + ${skillR} + ${diceMod}) — Failure!`);
+  }
+}
+
+// function Roll2D6Goons(){
+
+// }
