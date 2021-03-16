@@ -91,13 +91,21 @@ function RollDice(){
     return;
   }
   var rollResult = Number();
+  let rollArr = new Array();
+  var r = Number();
   for (d=1; d<(numDice + 1); d++) {
-    rollResult += getRndInt(1, sizeDice);
+    r = getRndInt(1, sizeDice)
+    rollResult += r;
+    rollArr.push(r);
     Logger.log('Roll total at roll no. '+ d + " " + rollResult); 
   }
   rollResult += modDice;
   Logger.log('Final roll result with modifiers: %d', rollResult);
-  ui.alert('Roll: ' + rollResult);
+  var rollList = String();
+  for (let i in rollArr) {
+    rollList += rollArr[i] + ' + ';
+  }
+  ui.alert(`Roll: ${rollResult} (${rollList} ${modDice})`);
 }
 
 function RollDiceSpec(s) {
@@ -139,8 +147,8 @@ function RollD20Adv(){
   var ui = SlidesApp.getUi();
   var r1 = getRndInt(1,20);
   var r2 = getRndInt(1,20);
-  var rollResult = Math.max(r1, r2);
-  Logger.log('The user rolled ' + r1 + ' and ' + r2 + ' for a result of ' + rollResult);
+  var roll = Math.max(r1, r2);
+  Logger.log('The user rolled ' + r1 + ' and ' + r2 + ' for a result of ' + roll);
   var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
   var modDice = Number();
   if (qModIn.getSelectedButton() == ui.Button.OK) {
@@ -151,9 +159,14 @@ function RollD20Adv(){
       modDice = Number(qModIn.getResponseText());
     }
     Logger.log('The user\'s roll is modified by ' + modDice);
-    rollResult += modDice;
+    var rollResult = roll + modDice;
     Logger.log('The final roll was %d', rollResult)
-    ui.alert('Roll: ' + rollResult + ' (' + r1 + ', ' + r2 + ')')
+    if (roll == 20) {
+      ui.alert(`Roll: ${rollResult} – Critical!! (Highest of [${r1}, ${r2}] + ${modDice}`);
+    }
+    else {
+      ui.alert(`Roll: ${rollResult} (Highest of [${r1}, ${r2}] + ${modDice})`);
+    }
   }
   else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
     Logger.log('The user cancelled the roll.');
@@ -167,8 +180,8 @@ function RollD20Dis(){
   var ui = SlidesApp.getUi();
   var r1 = getRndInt(1,20);
   var r2 = getRndInt(1,20);
-  var rollResult = Math.min(r1, r2);
-  Logger.log('The user rolled ' + r1 + ' and ' + r2 + ' for a result of ' + rollResult);
+  var roll = Math.min(r1, r2);
+  Logger.log('The user rolled ' + r1 + ' and ' + r2 + ' for a result of ' + roll);
   var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
   var modDice = Number();
   if (qModIn.getSelectedButton() == ui.Button.OK) {
@@ -179,9 +192,14 @@ function RollD20Dis(){
       modDice = Number(qModIn.getResponseText());
     }
     Logger.log('The user\'s roll is modified by ' + modDice);
-    rollResult += modDice;
+    var rollResult = roll + modDice;
     Logger.log('The final roll was %d', rollResult)
-    ui.alert('Roll: ' + rollResult + ' (' + r1 + ', ' + r2 + ')')
+    if (roll == 1) {
+      ui.alert(`Roll: ${rollResult} – Fumble!! (Lowest of [${r1}, ${r2}] + ${modDice}`);
+    }
+    else {
+      ui.alert(`Roll: ${rollResult} (Lowest of [${r1}, ${r2}] + ${modDice})`);
+    }
   }
   else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
     Logger.log('The user cancelled the roll.');
@@ -295,8 +313,8 @@ function Roll4DF(){
 
 function RollD20dnd(){
   var ui = SlidesApp.getUi();
-  var rollResult = getRndInt(1,20);
-  Logger.log('User rolled ' + rollResult);
+  var roll = getRndInt(1,20);
+  Logger.log('User rolled ' + roll);
   var qModIn = ui.prompt('Enter modifiers (leave blank if none).', ui.ButtonSet.OK_CANCEL);
   var modDice = Number();
   if (qModIn.getSelectedButton() == ui.Button.OK) {
@@ -307,8 +325,16 @@ function RollD20dnd(){
       modDice = Number(qModIn.getResponseText());
     }
     Logger.log('The user\'s roll is modified by ' + modDice);
-    rollResult += modDice;
-    ui.alert('Roll: ' + rollResult);
+    var rollResult = roll + modDice;
+    if (roll == 20) {
+      ui.alert(`Roll: ${rollResult} – Critical!! (${roll} + ${modDice})`);
+    }
+    else if (roll == 1) {
+      ui.alert(`Roll: ${rollResult} – Fumble!! (${roll} + ${modDice})`);
+    }
+    else {
+      ui.alert(`Roll: ${rollResult} (${roll} + ${modDice})`);
+    }
   }
   else if (qModIn.getSelectedButton() == ui.Button.CANCEL) {
     Logger.log('The user cancelled the roll.');
